@@ -102,38 +102,35 @@ class Enrollment(models.Model):
 #    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
 #    choices = models.ManyToManyField(Choice)
 
-# Question model
+Question model
 class Question(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    content = models.CharField(max_length=200)
-    grade = models.IntegerField(default=0)
+course = models.ForeignKey(Course, on_delete=models.CASCADE)
+question_text = models.CharField(max_length=200)
+grade = models.IntegerField(default=0)
+def __str__(self):
+    return self.question_text
 
-    def __str__(self):
-        return self.content
 def is_get_score(self, selected_choices):
     correct_ids = set(
-        self.choice_set.filter(
-            is_correct=True
-        ).values_list('id', flat=True)
+        self.choice_set.filter(is_correct=True)
+        .values_list('id', flat=True)
     )
-    selected_ids = set(int(choice_id) for choice_id in selected_choices)
+    selected_ids = {
+        choice.id if isinstance(choice, Choice) else int(choice)
+        for choice in selected_choices
+    }
     return correct_ids == selected_ids
-
-# Choice model
+Choice model
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    content = models.CharField(max_length=200)
-    is_correct = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.content
-
-
-# Submission model
-class Submission(models.Model):
-    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-    choices = models.ManyToManyField(Choice)
-    total_score = models.FloatField(default=0)
-
+question = models.ForeignKey(Question, on_delete=models.CASCADE)
+choice_text = models.CharField(max_length=200)
+is_correct = models.BooleanField(default=False)
 def __str__(self):
-    return f"Submission {self.id} - Score: {self.total_score}"
+    return self.choice_text
+Submission model
+class Submission(models.Model):
+enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+choices = models.ManyToManyField(Choice)
+total_score = models.FloatField(default=0)
+def __str__(self):
+    return f"Submission {self.pk} - Score: {self.total_score}"
