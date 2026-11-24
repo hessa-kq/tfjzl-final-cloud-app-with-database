@@ -110,7 +110,14 @@ class Question(models.Model):
 
     def __str__(self):
         return self.content
-
+def is_get_score(self, selected_choices):
+    correct_ids = set(
+        self.choice_set.filter(
+            is_correct=True
+        ).values_list('id', flat=True)
+    )
+    selected_ids = set(int(choice_id) for choice_id in selected_choices)
+    return correct_ids == selected_ids
 
 # Choice model
 class Choice(models.Model):
@@ -127,3 +134,6 @@ class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     choices = models.ManyToManyField(Choice)
     total_score = models.FloatField(default=0)
+
+def __str__(self):
+    return f"Submission {self.id} - Score: {self.total_score}"
