@@ -102,7 +102,7 @@ class Enrollment(models.Model):
 #    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
 #    choices = models.ManyToManyField(Choice)
 
-Question model
+#Question model
 class Question(models.Model):
 course = models.ForeignKey(Course, on_delete=models.CASCADE)
 question_text = models.CharField(max_length=200)
@@ -120,14 +120,14 @@ def is_get_score(self, selected_choices):
         for choice in selected_choices
     }
     return correct_ids == selected_ids
-Choice model
+#Choice model
 class Choice(models.Model):
 question = models.ForeignKey(Question, on_delete=models.CASCADE)
 choice_text = models.CharField(max_length=200)
 is_correct = models.BooleanField(default=False)
 def __str__(self):
     return self.choice_text
-Submission model
+#Submission model
 class Submission(models.Model):
 enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
 choices = models.ManyToManyField(Choice)
